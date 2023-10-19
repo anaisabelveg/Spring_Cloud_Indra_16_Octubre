@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Document</title>
+    </head>
+	<body>
+		<button onclick="todos()">Mostrar todos los productos</button> <br/>
+		<button onclick="crear()">Crear el carrito de Jose</button> <br/>
+		<button onclick="comprar()">Comprar raton</button> <br/>
+		<button onclick="ver()">Ver el carrito de Jose</button> <br/>
+	
+        <div id="resultado"></div>
+        
+        
+        
+        <script>
+
+			function todos(){
+	            fetch("http://localhost:8090/api/productos/listar")
+	                .then(async (response) => {
+	                    let datos = await response.json();
+	                    console.log(datos);
+	                    let seccion = document.querySelector("#resultado");
+	 					for(let prod of datos){
+							seccion.innerHTML += "<b>" + prod.descripcion + "</b><br/>";
+						}
+	                    
+	                })
+	                .catch(error => console.log(error));
+            }
+            
+            function crear(){				
+				fetch("http://localhost:8090/api/carrito/crear/Jose")
+	                .then(async (response) => {
+	                    let datos = await response.json();
+	                    console.log(datos);
+	                    let seccion = document.querySelector("#resultado");
+                    	seccion.innerHTML += "<b>Carrito creado</b><br/>";
+ 						seccion.innerHTML += "<b>Usuario:" + datos.usuario + "</b><br/>";
+						seccion.innerHTML += "<b>Importe:" + datos.importe + "</b><br/>";
+	                    
+	                })
+	                .catch(error => console.log(error));
+			}
+			
+			function comprar(){				
+				fetch("http://localhost:8090/api/carrito/agregar/id/3/cantidad/1/usuario/Jose")
+	                .then(async (response) => {
+	                    let datos = await response.json();
+	                    console.log(datos);
+	                    let seccion = document.querySelector("#resultado");
+	                    seccion.innerHTML += "<b>Producto agregado al carrito</b><br/>";               
+	                })
+	                .catch(error => console.log(error));
+			}
+			
+			function ver(){				
+				fetch("http://localhost:8090/api/carrito/buscar/Jose")
+	                .then(async (response) => {
+	                    let datos = await response.json();
+	                    console.log(datos);
+	                    let seccion = document.querySelector("#resultado");
+                    	seccion.innerHTML += "<b>Carrito</b><br/>";
+ 						seccion.innerHTML += "<b>Usuario: " + datos.usuario + "</b><br/>";
+						seccion.innerHTML += "<b>Importe: " + datos.importe + "</b><br/>";
+						for(let item of datos.contenido){
+							seccion.innerHTML += "<b>" + item.producto.id + "</b>";
+							seccion.innerHTML += "<b>" + item.producto.descripcion + "</b>";
+							seccion.innerHTML += "<b>" + item.producto.precio + "</b>";
+							seccion.innerHTML += "<b> Cantidad: " + item.cantidad + "</b><br/>";
+						}
+	                    
+	                })
+	                .catch(error => console.log(error));
+			}
+			
+			
+        
+        </script>
+        
+    </body>
+</html>
